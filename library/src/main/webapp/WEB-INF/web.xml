@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
+  <display-name>library</display-name>
+  <welcome-file-list>
+    <welcome-file>index.jsp</welcome-file>
+  </welcome-file-list>
+  
+<!--   ==================================== -->
+<!--   Required for SAPUI5 -->
+<!--   ==================================== -->  
+  <servlet>
+    <display-name>ResourceServlet</display-name>
+    <servlet-name>ResourceServlet</servlet-name>
+    <servlet-class>com.sap.ui5.resource.ResourceServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ResourceServlet</servlet-name>
+    <url-pattern>/resources/*</url-pattern>
+  </servlet-mapping>
+  
+<!--   ==================================== -->
+<!--   Required for persistence service -->
+<!--   ==================================== --> 
+  
+  <resource-ref>
+    <res-ref-name>jdbc/DefaultDB</res-ref-name>
+    <res-type>javax.sql.DataSource</res-type>
+  </resource-ref>
+  
+<!--   ==================================== -->
+<!--   Required for document service -->
+<!--   ==================================== --> 
+  
+   <resource-ref>
+        <res-ref-name>EcmService</res-ref-name>
+        <res-type>com.sap.ecm.api.EcmService</res-type>
+    </resource-ref>
+    
+<!--   ==================================== -->
+<!--   Required for connectivity service -->
+<!--   ==================================== --> 
+     <resource-ref>
+        <res-ref-name>OpenLibrary</res-ref-name>
+        <res-type>com.sap.core.connectivity.api.http.HttpDestination</res-type>
+    </resource-ref>
+    
+<!--   ==================================== -->
+<!--   Required for mail configurations -->
+<!--   ==================================== --> 
+    
+  <resource-ref>
+    <res-ref-name>mail/Session</res-ref-name>
+    <res-type>javax.mail.Session</res-type>
+  </resource-ref>
+  
+<!--   ==================================== -->
+<!--   Required for identity service -->
+<!--   ==================================== --> 
+  
+  <login-config>
+    <auth-method>FORM</auth-method>
+  </login-config>
+  <security-role>
+    <description>All SAP NetWeaver Cloud users</description>
+    <role-name>Everyone</role-name>
+  </security-role>
+  <security-role>
+    <description>Administrators</description>
+    <role-name>admin</role-name>
+  </security-role>
+  <security-constraint>
+    <web-resource-collection>
+      <web-resource-name>Protected Area</web-resource-name>
+      <url-pattern>/index.jsp</url-pattern>
+      <url-pattern>/restricted/everyone/*</url-pattern>
+      <url-pattern>/res/*</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <role-name>Everyone</role-name>
+    </auth-constraint>
+  </security-constraint>
+  <security-constraint>
+    <web-resource-collection>
+      <web-resource-name>Protected Admin Area</web-resource-name>
+      <url-pattern>/restricted/admin/*</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <role-name>admin</role-name>
+    </auth-constraint>
+  </security-constraint> 	
+</web-app>

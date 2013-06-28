@@ -1,0 +1,129 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.sap.hana.cloud.samples</groupId>
+	<artifactId>library</artifactId>
+	<packaging>war</packaging>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>library Maven Webapp</name>
+	<url>http://maven.apache.org</url>
+
+	<properties>
+
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<hana.cloud.jdk.version>1.6</hana.cloud.jdk.version>
+		<hana.cloud.sdk.version>1.29.18.1</hana.cloud.sdk.version>
+		<ui5.version>1.10.2</ui5.version>
+		<ui5.classifier>opt</ui5.classifier>
+		<opencmis.version>0.8.0-sap-08</opencmis.version>
+
+	</properties>
+
+
+	<dependencies>
+
+		<dependency>
+			<groupId>com.sap.netweaver.cloud</groupId>
+			<artifactId>neo-sdk-core-api</artifactId>
+			<version>${hana.cloud.sdk.version}</version>
+			<scope>system</scope>
+			<systemPath>${env.NW_CLOUD_SDK_PATH}/api/neo-sdk-core-api-${hana.cloud.sdk.version}.jar</systemPath>
+		</dependency>
+
+		<dependency>
+			<groupId>org.eclipse.persistence</groupId>
+			<artifactId>javax.persistence</artifactId>
+			<version>2.0.3</version>
+		</dependency>
+
+		 <dependency>
+            <groupId>org.eclipse.persistence</groupId>
+            <artifactId>eclipselink</artifactId>
+            <version>2.3.1</version>
+        </dependency>
+        
+        <dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>3.0.1</version>
+		</dependency>
+		
+		 <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.2.1</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.chemistry.opencmis</groupId>
+            <artifactId>chemistry-opencmis-client-api</artifactId>
+            <version>${opencmis.version}</version>
+            <scope>system</scope>
+            <systemPath>${env.NW_CLOUD_SDK_PATH}/api/chemistry-opencmis-client-api-${opencmis.version}.jar</systemPath>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.chemistry.opencmis</groupId>
+            <artifactId>chemistry-opencmis-client-commons-api</artifactId>
+            <version>${opencmis.version}</version>
+            <scope>system</scope>
+            <systemPath>${env.NW_CLOUD_SDK_PATH}/api/chemistry-opencmis-commons-api-${opencmis.version}.jar</systemPath>
+        </dependency>
+                        
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.1.3</version>
+            <scope>system</scope>
+            <systemPath>${env.NW_CLOUD_SDK_PATH}/api/httpclient-4.1.3.jar</systemPath>
+        </dependency>
+        
+         <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpcore</artifactId>
+            <version>4.1.4</version>
+            <scope>system</scope>
+            <systemPath>${env.NW_CLOUD_SDK_PATH}/api/httpcore-4.1.4.jar</systemPath>
+        </dependency>
+
+		<dependency>
+			<groupId>javax.mail</groupId>
+			<artifactId>mail</artifactId>
+			<scope>provided</scope>
+			<version>1.4.1</version>
+		</dependency>
+		
+		 <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.2</version>
+            <scope>system</scope>
+            <systemPath>${env.NW_CLOUD_SDK_PATH}/api/slf4j-api-1.7.2.jar</systemPath>
+        </dependency>
+			
+	</dependencies>
+	
+	<build>
+		<finalName>library</finalName>
+
+
+		<plugins>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.0</version>
+				<configuration>
+					<source>${hana.cloud.jdk.version}</source>
+					<target>${hana.cloud.jdk.version}</target>
+					<showDeprecation>false</showDeprecation>
+					<showWarnings>false</showWarnings>
+				</configuration>
+			</plugin>
+
+		</plugins>
+
+	</build>
+
+</project>

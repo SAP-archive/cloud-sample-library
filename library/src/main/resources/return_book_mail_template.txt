@@ -1,0 +1,9 @@
+Dear ${displayname},
+
+The returning of the book ${title}, author ${author} to the library has been registered.
+Now others will have the chance to enjoy it just as you did.
+
+We wish you a pleasant time with our books.
+
+Kind Regards,
+SAP Library Sample Team 

@@ -1,0 +1,5 @@
+Name=OpenLibrary
+Type=HTTP
+URL=http\://openlibrary.org
+ProxyType=Internet
+Authentication=NoAuthentication

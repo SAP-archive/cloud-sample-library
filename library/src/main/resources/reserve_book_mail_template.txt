@@ -1,0 +1,11 @@
+Dear ${displayname},
+
+You have reserved ${title}, author ${author}.
+This fantastic book is waiting for you to come and pick it up.
+
+Please, return it not later than ${deadline}.
+
+We wish you a pleasant time with our books.
+
+Kind Regards,
+SAP Library Sample Team 
