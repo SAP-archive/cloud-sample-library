@@ -37,9 +37,9 @@ public class ConnectivityAdapter {
 		           HttpDestination destination = (HttpDestination) ctx.lookup("java:comp/env/OpenLibrary");
 		           httpClient = destination.createHttpClient();
 		       } catch (NamingException exc) {
-		           LOGGER.error("A NamingException has occurred while trying to retrieve destination", exc);
+		           LOGGER.error("A NamingException has occurred while trying to retrieve destination OpenLibrary");
 		       } catch (DestinationException exc) {
-		    	   LOGGER.error("A DestinationException has occurred while trying to retrieve destination", exc);
+		    	   LOGGER.error("A DestinationException has occurred while trying to create HttpClient instance", exc);
 		       }
 
 	    }

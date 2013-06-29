@@ -47,12 +47,18 @@ public class ReserveBookServlet extends HttpServlet {
 	    String author = request.getParameter("authorName").trim();
 		Book bookToReserve = (Book) em.createNamedQuery("bookByTitleAndAuthor").setParameter("bookName", title).setParameter("authorName", author).getSingleResult();
 								
-		bookToReserve = updateBookStatus(request, deadLine, userFromDatabase, bookToReserve);
-		createLendedBookEntry(now, deadLine, userFromDatabase, bookToReserve);	
+		bookToReserve = updateBookStatus(bookToReserve, userFromDatabase, deadLine);
+		
+		BookLending lending = createLendedBookEntry(bookToReserve, userFromDatabase, now, deadLine);	
+		
+		em.getTransaction().begin();
+		em.merge(bookToReserve);
+		em.persist(lending);
+		em.getTransaction().commit();
 		
 	}
 
-	private void createLendedBookEntry(Date now, Date deadLine, LibraryUser userFromDatabase, Book bookToReserve) {
+	private BookLending createLendedBookEntry(Book bookToReserve, LibraryUser userFromDatabase, Date now, Date deadLine) {
 		
 		int remainingDays = CalendarUtils.getDaysBetween(now, deadLine);
         BookLending lending = new BookLending();
@@ -60,28 +66,15 @@ public class ReserveBookServlet extends HttpServlet {
         lending.setUser(userFromDatabase);
         lending.setRemainingDays(remainingDays);
 
-        EntityManager em = PersistenceAdapter.getEntityManager();
-
-        em.getTransaction().begin();
-		em.persist(lending);
-		em.getTransaction().commit();
+        return lending;
 	}
 
-	private Book updateBookStatus(HttpServletRequest request,
-			Date deadLine, LibraryUser userFromDatabase, Book bookToReserve)
-			throws IOException {    
+	private Book updateBookStatus(Book bookToReserve, LibraryUser userFromDatabase, Date deadLine) {    
 		
         bookToReserve.setReservedUntil(deadLine);
         bookToReserve.setReservedBy(userFromDatabase.getDisplayName());
         bookToReserve.setReservedByUserId(userFromDatabase.getUserId());
         bookToReserve.setReserved(true);
-
-        EntityManager em = PersistenceAdapter.getEntityManager();  
-
-        // update the Database that the book is already reserved
-        em.getTransaction().begin();
-		em.merge(bookToReserve);
-		em.getTransaction().commit();
 		
 		return bookToReserve;
 	}

@@ -15,8 +15,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
-import com.sap.hana.cloud.samples.util.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import com.sap.hana.cloud.samples.util.IOUtils;
 import com.sap.hana.cloud.samples.adapters.DocumentAdapter;
 import com.sap.hana.cloud.samples.adapters.IdentityAdapter;
 import com.sap.hana.cloud.samples.adapters.PersistenceAdapter;
@@ -35,6 +37,7 @@ import com.sap.hana.cloud.samples.util.AlertsUtil;
 urlPatterns={"/restricted/everyone/ImageUploadServlet"})
 @MultipartConfig
 public class ImageUploadServlet extends HttpServlet {
+	private static final Logger LOGGER = LoggerFactory.getLogger(ImageUploadServlet.class);
 
 	private static final long serialVersionUID = 1;
 
@@ -52,9 +55,9 @@ public class ImageUploadServlet extends HttpServlet {
 
 		Part part = request.getPart("imageUploader");
 		if (part == null) {
-			String error = "Could not retrieve the uploaded content!";
-			AlertsUtil.alert(request.getSession(), response, error);
-			throw new ServletException(error);
+			String error = "Could not retrieve the uploaded content! Part is null.";
+			LOGGER.error(error);
+			throw new RuntimeException(error);
 		}
 
 		InputStream partInputStream = part.getInputStream();
@@ -64,34 +67,34 @@ public class ImageUploadServlet extends HttpServlet {
 		String fileName = getFileName(part);
 
 		if (fileName == null) {
-			String error = "Could not retrieve the name of the uploaded file!";
-			AlertsUtil.alert(request.getSession(), response, error);
-			throw new ServletException(error);
+			String error = "Could not retrieve the name of the uploaded file! File name is null.";
+			LOGGER.error(error);
+			throw new RuntimeException(error);
 		}
 
 		if (imageContent.length > DEFAULT_MAX_SIZE) {
-			String error = "Uploaded file is too large! Limit is 1 MB.";
-			AlertsUtil.alert(request.getSession(), response, error);
-			throw new ServletException(error);
+			String message = "Uploaded file is too large! Limit is 1 MB.";
+			LOGGER.debug(message);
+			AlertsUtil.alert(request.getSession(), response, message);
+			return;
 		}
 
 		if (!isImage(imageContent)) {
-			String error = "Uploaded file is not an image from the allowed range! (allowed file types: gif, png, jpg, bmp)";
-			AlertsUtil.alert(request.getSession(), response, error);
-			throw new ServletException(error);
+			String message = "Uploaded file is not an image from the allowed range! (allowed file types: gif, png, jpg, bmp)";
+			LOGGER.debug(message);
+			AlertsUtil.alert(request.getSession(), response, message);
+			return;
 		}
 
 		String fileExtension = fileName.substring(fileName.lastIndexOf('.') + 1);
-
 		String currentUserId = IdentityAdapter.getLoggedUserId(request);
-
-		EntityManager em = PersistenceAdapter.getEntityManager();
-
-		LibraryUser userFromDatabase = (LibraryUser) em.createNamedQuery("getUserById").setParameter("userId", currentUserId).getSingleResult();
-
 		String newFileName = currentUserId + "." + fileExtension;
 
-		DocumentAdapter.uploadDocument(newFileName, imageContent);
+		EntityManager em = PersistenceAdapter.getEntityManager();
+		LibraryUser userFromDatabase = (LibraryUser) em.createNamedQuery("getUserById").setParameter("userId", currentUserId).getSingleResult();
+		
+		DocumentAdapter adapter = new DocumentAdapter(newFileName);
+		adapter.upload(imageContent);
 		userFromDatabase.setImgSrc("restricted/everyone/VisualizeImageServlet" + "?filename=" + newFileName);
 
 		em.getTransaction().begin();
@@ -116,8 +119,15 @@ public class ImageUploadServlet extends HttpServlet {
 	}
 
 	private static boolean isImage(byte[] fileContent) {
-        boolean result = false;
+        
+		boolean result = false;
+		
         int neededHeaderBytes = 4;
+        
+        if (fileContent.length < neededHeaderBytes) {
+        	return false;
+        }
+        
         StringBuilder header = new StringBuilder();
         for (int i = 0; i < neededHeaderBytes; i++) {
             header.append(Integer.toHexString(fileContent[i]));

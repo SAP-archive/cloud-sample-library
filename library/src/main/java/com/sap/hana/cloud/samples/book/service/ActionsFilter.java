@@ -56,7 +56,7 @@ public class ActionsFilter implements Filter {
 
 		} catch (NoResultException exc) {
 
-			// if the book is has not been borrowed and the user is trying to return it, then we cannot proceed
+			// if the book has not been borrowed and the user is trying to return it, then we cannot proceed
 			if (tryingToReturnBook) {
 				canProceed = false;
 			} else {

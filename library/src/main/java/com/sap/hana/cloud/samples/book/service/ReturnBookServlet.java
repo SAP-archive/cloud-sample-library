@@ -41,16 +41,12 @@ public class ReturnBookServlet extends HttpServlet {
         LibraryUser userFromDatabase = (LibraryUser) em.createNamedQuery("getUserById").setParameter("userId", userId).getSingleResult();
         Book lendedBook = (Book) em.createNamedQuery("bookByTitleAndAuthor").setParameter("bookName", title).setParameter("authorName", author).getSingleResult();
 
-        em.getTransaction().begin();
-        em.createNamedQuery("deleteLendingByUserAndBook").setParameter("user", userFromDatabase).setParameter("lendedBook", lendedBook).executeUpdate();
-        em.getTransaction().commit();
-
-
         lendedBook.setReserved(false);
         lendedBook.setReservedBy(null);
         lendedBook.setReservedUntil(null);
 
         em.getTransaction().begin();
+        em.createNamedQuery("deleteLendingByUserAndBook").setParameter("user", userFromDatabase).setParameter("lendedBook", lendedBook).executeUpdate();
 		em.merge(lendedBook);
 		em.getTransaction().commit();
 		

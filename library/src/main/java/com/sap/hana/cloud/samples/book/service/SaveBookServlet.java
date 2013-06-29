@@ -41,6 +41,7 @@ public class SaveBookServlet extends HttpServlet {
         try{
     		EntityManager em = PersistenceAdapter.getEntityManager();
     		em.createNamedQuery("bookByTitleAndAuthor").setParameter("bookName", title).setParameter("authorName", author).getSingleResult();
+
     		JsonObject jsonResponse = new JsonObject();
     		jsonResponse.addProperty("alreadyExists", true);
     		response.getWriter().print(jsonResponse);

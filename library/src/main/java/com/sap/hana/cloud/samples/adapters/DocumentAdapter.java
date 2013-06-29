@@ -15,7 +15,7 @@ import org.apache.chemistry.opencmis.client.api.Session;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 import org.apache.chemistry.opencmis.commons.data.ContentStream;
 import org.apache.chemistry.opencmis.commons.enums.VersioningState;
-import org.apache.chemistry.opencmis.commons.exceptions.CmisNameConstraintViolationException;
+
 import org.apache.chemistry.opencmis.commons.exceptions.CmisObjectNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,75 +40,87 @@ public class DocumentAdapter {
     private static final String UNIQUE_NAME = "com.sap.library.ecm.document.repository.01";
     private static final String UNIQUE_KEY = "com.sap.library.ecm.h14PJthdmpHGHdskFFjlk";
 
+    private String name;
+    
 
+    public DocumentAdapter(String fileName) {
+    	if (fileName == null) {
+    		throw new IllegalArgumentException("Parameter fileName cannot be null.");
+    	}
+    	this.name = fileName;
+    }
+    
     /**
      * This method uploads a document represented as a byte array into the document service repository.
+     * If a document with the same name exists then it is replaced with the new one.
      *
-     * @param documentName - the name with which the file will be uploaded into the repository
      * @param documentContent - the content of the uploaded document represented as a byte array
      * */
-    public static void uploadDocument(String documentName, byte[] documentContent) throws CmisNameConstraintViolationException {
-        if (documentExists(documentName)) {
-            deleteDocument(documentName);
-        }
-        createDocument(documentName, documentContent);
-    }
-
-    /**
-     * This method retrieves the content of a document (as a byte array) in the document service repository.
-     *
-     * @param documentName - the name of the document that should be extracted from the repository
-     * @return the document content as a byte array
-     * */
-    public static byte[] getDocumentAsByteArray(String documentName) throws CmisObjectNotFoundException {
-        Document document = getDocument(documentName);
-        byte[] documentAsByteArray = convertDocumentToByteArray(document);
-        return documentAsByteArray;
-    }
-
-    private static boolean documentExists(String documentName) {
-
-    	if (getDocument(documentName) == null) {
-    		return false;
-    	}
-
-    	return true;
-    }
-
-    private static Document getDocument(String documentName) {
-        Document document = null;
-        Session session = getCmisSession();
-        if (session == null) {
+    public void upload(byte[] documentContent) {
+    	
+    	Session session = getCmisSession();
+    	if (session == null) {
             LOGGER.error("ECM not found, Session is null.");
-            return null;
-        }
-        try {
-            document = (Document) session.getObjectByPath("/" + documentName);
-        } catch (ClassCastException exc) {
-        	LOGGER.error("The path does not point to a Document.", exc);
-        } catch (CmisObjectNotFoundException exc) {
-        	LOGGER.error("The document " + documentName + " cannot be found.", exc);
-        }
-
-        return document;
-    }
-
-    private static void createDocument(String documentName, byte[] documentContent) throws CmisNameConstraintViolationException {
-    	 Session session = getCmisSession();
-    	 if (session == null) {
-             LOGGER.error("ECM not found, Session is null.");
-             return;
+            return;
          }
     	
-    	Folder root = getCmisSession().getRootFolder();
-
-        Map<String, Object> properties = getProperties(documentName);
-        String documentExtension = documentName.substring(documentName.lastIndexOf('.') + 1);
-        String mimeType = "image/" + documentExtension;
-        ContentStream contentStream = getContentStream(documentName, mimeType, documentContent);
+    	Document document = getDocument(session, this.name);
+    	if (document != null) {
+    		deleteDocument(document);
+    	}
+    	
+    	
+    	Folder root = session.getRootFolder();
+        Map<String, Object> properties = getProperties(this.name);
+        ContentStream contentStream = getContentStream(session, documentContent);
+        
         root.createDocument(properties, contentStream, VersioningState.NONE);
     }
-
+    
+    /**
+     * This method retrieves the content of a document (as a byte array) in the document service repository.
+     * This method returns null if the document does not exist.
+     *
+     * @return the document content as a byte array
+     * */
+    public byte[] getAsByteArray() throws IOException{
+    	
+    	Session session = getCmisSession();
+    	if (session == null) {
+             LOGGER.error("ECM not found, Session is null.");
+             return null;
+         }
+    	
+    	Document document = getDocument(session, this.name);
+    	if (document == null) {
+    		return null;
+    	}
+    	
+    	InputStream stream = document.getContentStream().getStream();
+    	
+    	return IOUtils.toByteArray(stream);
+    } 
+    
+    private Document getDocument(Session session, String documentName) {
+    	
+    	Document document = null;
+    	
+    	 try {
+             document = (Document) session.getObjectByPath("/" + documentName);
+         } catch (ClassCastException exc) {
+         	LOGGER.error("The path does not point to a Document.", exc);
+         } catch (CmisObjectNotFoundException exc) {
+         	LOGGER.error("The document " + documentName + " cannot be found.", exc);
+         }
+    	
+    	return document;
+    }
+    
+    private void deleteDocument(Document document) {
+    	document.deleteAllVersions();	
+    }
+    
+    
     /**
      * These properties contain the object type we are going to create in the repository. In this case -
      * a document with the name specified.
@@ -116,40 +128,26 @@ public class DocumentAdapter {
      * @param documentName - the name of the document to be created
      * */
     private static Map<String, Object> getProperties(String documentName) {
-        Map<String, Object> properties = new HashMap<String, Object>();
+      
+    	Map<String, Object> properties = new HashMap<String, Object>();
         properties.put(PropertyIds.OBJECT_TYPE_ID, "cmis:document");
         properties.put(PropertyIds.NAME, documentName);
+        
         return properties;
     }
 
-    private static ContentStream getContentStream(String documentName, String mimeType, byte[] documentContent) {
+    private ContentStream getContentStream(Session session, byte[] documentContent) {
         InputStream stream = new ByteArrayInputStream(documentContent);
-        ContentStream contentStream = getCmisSession().getObjectFactory().createContentStream(documentName, documentContent.length,
-                mimeType, stream);
+        
+        String documentExtension = this.name.substring(this.name.lastIndexOf('.') + 1);
+        String mimeType = "image/" + documentExtension;
+        
+        ContentStream contentStream = session.getObjectFactory().createContentStream(this.name, 
+        		documentContent.length, mimeType, stream);
+        
         return contentStream;
     }
-
-    private static byte[] convertDocumentToByteArray(Document document) {
-        InputStream stream = document.getContentStream().getStream();
-        byte[] documentAsBytes = null;
-        try {
-            documentAsBytes = IOUtils.toByteArray(stream);
-            stream.close();
-        } catch (IOException exc) {
-        	LOGGER.error("Could not convert document to byte array.", exc);
-        }
-
-        return documentAsBytes;
-    }
-
-    public static void deleteDocument(String documentName) {
-        try {
-            Document documentToBeDeleted = getDocument(documentName);
-            documentToBeDeleted.deleteAllVersions();
-        } catch (CmisObjectNotFoundException exc) {
-        	LOGGER.error("Document '" + documentName + "' does not exist in repository. Cannot be deleted.", exc);
-        }
-    }
+    
 
     private static Session getCmisSession() {
 
@@ -157,8 +155,7 @@ public class DocumentAdapter {
 
         	try {
                 InitialContext ctx = new InitialContext();
-                String lookupName = "java:comp/env/EcmService";
-                EcmService ecmSvc = (EcmService) ctx.lookup(lookupName);
+                EcmService ecmSvc = (EcmService) ctx.lookup("java:comp/env/EcmService");
                 try {
                     // connect to my repository
                 	cmisSession = ecmSvc.connect(UNIQUE_NAME, UNIQUE_KEY);
@@ -173,6 +170,7 @@ public class DocumentAdapter {
             }
 
         }
+    	
         return cmisSession;
     }
 
@@ -181,7 +179,6 @@ public class DocumentAdapter {
 		options.setUniqueName(UNIQUE_NAME);
 		options.setRepositoryKey(UNIQUE_KEY);
 		options.setVisibility(com.sap.ecm.api.RepositoryOptions.Visibility.PROTECTED);
-		options.setMultiTenantCapable(true);
 		ecmSvc.createRepository(options);
 	}
 }

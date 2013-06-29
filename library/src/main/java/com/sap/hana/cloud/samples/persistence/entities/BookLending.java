@@ -12,7 +12,6 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "T_BOOK_LENDING")
 @NamedQueries({
-@NamedQuery(name = "allLendings", query = "select l from BookLending l"),
 @NamedQuery(name = "lendingsByUser", query = "select l from BookLending l where l.user = :user"),
 @NamedQuery(name = "lendingByBook", query = "select l from BookLending l where l.lendedBook = :lendedBook"),
 @NamedQuery(name = "lendingsByUserAndBook", query = "select l from BookLending l where l.user = :user and l.lendedBook = :lendedBook"),

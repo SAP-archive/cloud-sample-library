@@ -14,9 +14,9 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<hana.cloud.jdk.version>1.6</hana.cloud.jdk.version>
 		<hana.cloud.sdk.version>1.29.18.1</hana.cloud.sdk.version>
-		<ui5.version>1.10.2</ui5.version>
-		<ui5.classifier>opt</ui5.classifier>
 		<opencmis.version>0.8.0-sap-08</opencmis.version>
+		<httpclient.version>4.1.3</httpclient.version>
+		<httpcore.version>4.1.4</httpcore.version>
 
 	</properties>
 
@@ -74,17 +74,17 @@
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
-            <version>4.1.3</version>
+            <version>${httpclient.version}</version>
             <scope>system</scope>
-            <systemPath>${env.NW_CLOUD_SDK_PATH}/api/httpclient-4.1.3.jar</systemPath>
+            <systemPath>${env.NW_CLOUD_SDK_PATH}/api/httpclient-${httpclient.version}.jar</systemPath>
         </dependency>
         
          <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpcore</artifactId>
-            <version>4.1.4</version>
+            <version>${httpcore.version}</version>
             <scope>system</scope>
-            <systemPath>${env.NW_CLOUD_SDK_PATH}/api/httpcore-4.1.4.jar</systemPath>
+            <systemPath>${env.NW_CLOUD_SDK_PATH}/api/httpcore-${httpcore.version}.jar</systemPath>
         </dependency>
 
 		<dependency>

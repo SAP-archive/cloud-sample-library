@@ -153,8 +153,13 @@ sap.ui.controller("sap.library.allBooks.AllBooks", {
 			success: function () {
 				// do nothing, the user will receive the email
 			},
-			error: function() {
-				sap.ui.commons.MessageBox.alert("Could not send email!", "", "Please note");
+			error: function(jqXHR) {
+				
+				if (jqXHR.status === 534) {
+					sap.ui.commons.MessageBox.alert(jqXHR.responseText, "", "Please note");
+				} else {
+					sap.ui.commons.MessageBox.alert("Could not send email!", "", "Please note");
+				}
 	        }
 		});
     	
@@ -170,8 +175,15 @@ sap.ui.controller("sap.library.allBooks.AllBooks", {
     		url : "restricted/everyone/ExtractBookDetailsServlet?isbn=" + isbn,
     		success : function(data) {
     			
-    			model.setProperty("/details/data", data);
-    			stopWaitingCursor();
+    			// at least we will receive the ISBN of the book (because we are searching by the ISBN)
+    			// and it is located in the pairs
+    			if (data && data.pairs) {
+    				model.setProperty("/details/data", data);
+        			stopWaitingCursor();		
+    			} else {
+    				handleExpiredSession();
+    			}
+    		
     		},
     		error : function(jqXHR) {
     			if (jqXHR.status === 400) {

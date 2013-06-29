@@ -1,6 +1,5 @@
 package com.sap.hana.cloud.samples.user.service;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 
 import javax.persistence.EntityManager;
@@ -13,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.gson.Gson;
 import com.sap.hana.cloud.samples.adapters.PersistenceAdapter;
 import com.sap.hana.cloud.samples.persistence.entities.LibraryUser;
+import com.sap.hana.cloud.samples.util.IOUtils;
 
 /**
  * This servlet is called when the user changes a field in the 'My Profile' tab. It updates
@@ -29,14 +29,9 @@ public class UpdateUserServlet extends HttpServlet {
 
 		Gson gson = new Gson();
 
-		String line;
-		StringBuilder builder = new StringBuilder();
-		BufferedReader reader = request.getReader();
-        while ((line = reader.readLine()) != null) {
-               builder.append(line);
-        }
+		String data = IOUtils.extractDataFromRequest(request);
 
-        LibraryUser updatedUser = gson.fromJson(builder.toString(), LibraryUser.class);
+        LibraryUser updatedUser = gson.fromJson(data, LibraryUser.class);
 
 		EntityManager em = PersistenceAdapter.getEntityManager();
 

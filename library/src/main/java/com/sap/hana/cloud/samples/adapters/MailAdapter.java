@@ -4,7 +4,6 @@ import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.Transport;
-import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.naming.InitialContext;
@@ -50,8 +49,8 @@ public class MailAdapter {
         transport.close();
 	}
 
-	private static Message createMessage(String mailTo, String subject, String mailContent, Session session) throws AddressException,
-			MessagingException {
+	private static Message createMessage(String mailTo, String subject, String mailContent, Session session) throws	MessagingException {
+		
 		InternetAddress addressFrom = new InternetAddress(MAIL_FROM);
 		InternetAddress addressTo = new InternetAddress(mailTo);
 		Message message = new MimeMessage(session);
@@ -64,14 +63,16 @@ public class MailAdapter {
 	}
 
 	private static Session getSession() {
+		
 		if (session == null) {
-			 InitialContext ctx;
+			
 			try {
-				ctx = new InitialContext();
+				InitialContext ctx = new InitialContext();
 				session =  (Session) ctx.lookup("java:comp/env/mail/Session");
 			} catch (NamingException exc) {
-				LOGGER.debug("NamingException has occurred while trying to lookup Session!", exc);
+				LOGGER.error("NamingException has occurred while trying to lookup Session!");
 			}
+			
 		}
 
 		return session;

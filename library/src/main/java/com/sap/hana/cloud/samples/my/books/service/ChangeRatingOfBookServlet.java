@@ -55,9 +55,6 @@ public class ChangeRatingOfBookServlet extends HttpServlet {
 
 		em.getTransaction().begin();
 		em.merge(currentBook);
-		em.getTransaction().commit();
-
-		em.getTransaction().begin();
 		em.merge(currentLending);
 		em.getTransaction().commit();
 	}

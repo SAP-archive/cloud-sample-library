@@ -44,7 +44,16 @@ public class ExtractMyBooksServlet extends HttpServlet {
 		@SuppressWarnings("unchecked")
 		List<BookLending> myBooks =  (List<BookLending>) em.createNamedQuery("lendingsByUser").setParameter("user", userFromDatabase).getResultList();
 
-		// update the remaining days
+		updateRemainingDays(myBooks);
+
+		response.getWriter().print(new Gson().toJson(myBooks));
+	}
+
+
+	private void updateRemainingDays(List<BookLending> myBooks) {
+
+		EntityManager em = PersistenceAdapter.getEntityManager();
+		
 		for (BookLending lending : myBooks) {
 
 			int remainingDays = CalendarUtils.getDaysBetween(new Date(), lending.getLendedBook().getReservedUntil());
@@ -57,7 +66,5 @@ public class ExtractMyBooksServlet extends HttpServlet {
 			}
 
 		}
-
-		response.getWriter().print(new Gson().toJson(myBooks));
 	}
 }

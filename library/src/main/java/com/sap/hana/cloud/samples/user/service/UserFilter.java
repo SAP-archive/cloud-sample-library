@@ -34,10 +34,10 @@ public class UserFilter implements Filter {
 
 		try{
 			EntityManager em = PersistenceAdapter.getEntityManager();
-			LibraryUser currentUser = (LibraryUser) em.createNamedQuery("getUserById").setParameter("userId", currentUserId).getSingleResult();
+			LibraryUser userFromDatabase = (LibraryUser) em.createNamedQuery("getUserById").setParameter("userId", currentUserId).getSingleResult();
 			// this user exists in the Database
 
-			updateUser(currentUser, userFromIdentityService);
+			updateUser(userFromDatabase, userFromIdentityService);
 		}
 		catch (NoResultException exc) {
 			// this user does not yet exist in the Database

@@ -2,9 +2,7 @@ package com.sap.hana.cloud.samples.adapters;
 
 import java.security.Principal;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-
 
 import com.sap.hana.cloud.samples.persistence.entities.LibraryUser;
 import com.sap.security.um.service.UserManagementAccessor;
@@ -27,7 +25,7 @@ public class IdentityAdapter {
 	 * @param request from which the method extracts the required information
 	 * @return an instance of the LibraryUser entity
 	 * */
-	public static LibraryUser getLoggedUser (HttpServletRequest request) throws ServletException {
+	public static LibraryUser getLoggedUser (HttpServletRequest request) {
 
         if (request == null) {
             throw new IllegalArgumentException("Request must not be null");
@@ -64,13 +62,12 @@ public class IdentityAdapter {
 	        libUser.setEmail(email);
 
 	        libUser.setRoles(idmUser.getRoles());
-
         }
         catch (PersistenceException exc) {
-        	throw new ServletException("Could not retrieve currently logged in user due to a PersistenceException");
+        	throw new RuntimeException("Could not retrieve currently logged in user due to a PersistenceException", exc);
         }
         catch (UnsupportedUserAttributeException exc) {
-        	throw new ServletException("Could not retrieve currently logged in user due to an UnsupportedUserAttributeException");
+        	throw new RuntimeException("Could not retrieve currently logged in user due to an UnsupportedUserAttributeException", exc);
 		}
 
 		return libUser;

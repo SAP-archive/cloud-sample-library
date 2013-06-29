@@ -26,7 +26,7 @@ import com.sap.hana.cloud.samples.util.BookDetailsUtil;
  * This class uses the connectivity service to extract book details from Open Library.
  * 
  * If details are not available or an error occurs, it returns the response code that has been received from the OpenLibrary REST API.
- * If the OpenLibrary destintion is missing the response code is 400.
+ * If the OpenLibrary destination is missing the response code is 400.
  * 
  * This servlet can be called by all users. 
  * */

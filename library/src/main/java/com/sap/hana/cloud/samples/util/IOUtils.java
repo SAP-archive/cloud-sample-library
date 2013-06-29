@@ -56,7 +56,8 @@ public class IOUtils {
 	 * @param request - the request from which data will be read.
 	 * @return a string representation of the data.
 	 * */
-	public static String extractDataFromRequest (HttpServletRequest request) throws IOException {
+	public static String extractDataFromRequest (HttpServletRequest request) 
+			throws IOException {
 		
 		String line;
 		StringBuilder builder = new StringBuilder();

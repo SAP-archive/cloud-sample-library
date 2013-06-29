@@ -2,7 +2,6 @@ package com.sap.hana.cloud.samples.util;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 
 import javax.mail.MessagingException;
@@ -30,7 +29,7 @@ public class MailSenderUtil {
 	/**
 	 * This method sends e-mail to the user who has reserved a book.
 	 * */
-	public void sendForReservedBook() throws UnsupportedEncodingException, IOException, MessagingException {
+	public void sendForReservedBook() throws IOException, MessagingException {
 	
 		String template = commonTemplateProcessing(getTemplate(Mailing.BOOK_RESERVATION));
 		
@@ -44,7 +43,7 @@ public class MailSenderUtil {
 	/**
 	 * This method sends e-mail to the user who has just returned a book.
 	 * */
-	public void sendForReturningBook() throws UnsupportedEncodingException, IOException, MessagingException {
+	public void sendForReturningBook() throws IOException, MessagingException {
 			
 		String message = commonTemplateProcessing(getTemplate(Mailing.BOOK_RETURN));
 
@@ -52,7 +51,7 @@ public class MailSenderUtil {
 		MailAdapter.send(user.getEmail(), SUBJECT, message);
 	}
 	
-	private String getTemplate(Mailing mailing) throws UnsupportedEncodingException, IOException {
+	private String getTemplate(Mailing mailing) throws IOException {
 		
 		InputStream is;
 		String template = null;
@@ -70,7 +69,6 @@ public class MailSenderUtil {
 		}
 		
 		return template;
-		
 	}
 	
 	/**

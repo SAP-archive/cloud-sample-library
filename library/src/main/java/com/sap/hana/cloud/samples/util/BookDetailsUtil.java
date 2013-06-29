@@ -59,6 +59,8 @@ public class BookDetailsUtil {
 		pairs.add(generateArrayElement("ISBN", isbn));
 
 		if (isEmptyJson(details)) {
+			// the Open Library's REST returns '{}' if a book
+			// with the given ISBN was not found
 			result.add("pairs", pairs);
 			return result;
 		}

@@ -30,7 +30,7 @@ connectionErrorBox.placeAt("content");
 
 </script>
 
-<body class="sapUiBody" role="application">
+<body class="sapUiBody">
 	<div id="content"></div>
 </body>
 </html>

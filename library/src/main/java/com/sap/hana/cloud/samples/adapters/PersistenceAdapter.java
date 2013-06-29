@@ -50,35 +50,32 @@ public class PersistenceAdapter {
 		Connection connection = null;
 		try {
 			InitialContext ctx = new InitialContext();
-			DataSource ds = (DataSource) ctx
-					.lookup("java:comp/env/jdbc/DefaultDB");
+			DataSource ds = (DataSource) ctx.lookup("java:comp/env/jdbc/DefaultDB");
 			connection = ds.getConnection();
 			Map<String, Object> properties = new HashMap<String, Object>();
 			properties.put(PersistenceUnitProperties.NON_JTA_DATASOURCE, ds);
-			String databaseProductName = connection.getMetaData()
-					.getDatabaseProductName();
+			String databaseProductName = connection.getMetaData().getDatabaseProductName();
 
 			// it is possible to use HANA DB
 			// if you would like to use HANA DB, please refer to the official documentation where
-			// the prerequisites are described.
+			// the prerequisites are described (https://help.hana.ondemand.com/help/frameset.htm?e7a837f4bb5710149251a99bcf22430b.html)
 			if (databaseProductName.equals("HDB")) {
 				properties.put("eclipselink.target-database",
 						"com.sap.persistence.platform.database.HDBPlatform");
 			}
-			emf = Persistence.createEntityManagerFactory("library",
-					properties);
+			emf = Persistence.createEntityManagerFactory("library",	properties);
 		} catch (NamingException exc) {
-			LOGGER.error("A NamingException has occured while initializing EntityManagerFactory.", exc);
-			throw new RuntimeException("Persistency service cannot be initialized.", exc);
+			LOGGER.error("A NamingException has occured while initializing persistence service.", exc);
+			throw new RuntimeException("Persistence service cannot be initialized.", exc);
 		} catch (SQLException exc) {
-			LOGGER.error("An SQLException has occured while initializing EntityManagerFactory.", exc);
+			LOGGER.error("An SQLException has occured while initializing persistence service.", exc);
 			throw new RuntimeException("Persistency service cannot be initialized.", exc);
 		} finally {
 			if (connection != null) {
 				try {
 					connection.close();
-				} catch (SQLException e) {
-					LOGGER.error("An SQLException has occured while initializing EntityManagerFactory.", e);
+				} catch (SQLException exc) {
+					LOGGER.error("An SQLException has occured while closing connection.", exc);
 				}
 			}
 		}

@@ -10,8 +10,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.apache.chemistry.opencmis.commons.exceptions.CmisObjectNotFoundException;
 import com.sap.hana.cloud.samples.util.IOUtils;
 
 import com.sap.hana.cloud.samples.adapters.DocumentAdapter;
@@ -33,23 +31,24 @@ public class VisualizeImageServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
 
 		response.setContentType("image/png");
 
+		String fileName = request.getParameter("filename");
+		DocumentAdapter adapter = new DocumentAdapter(fileName);
+		byte[] pictureAsBytes = adapter.getAsByteArray();
 
-		String filename = request.getParameter("filename");
+		if (pictureAsBytes != null) {
 
-		 try {
-	            byte[] pictureAsBytes = DocumentAdapter.getDocumentAsByteArray(filename);
-	            OutputStream servletOut = response.getOutputStream();
+			OutputStream servletOut = response.getOutputStream();
+			IOUtils.writeToOutputStream(new ByteArrayInputStream(pictureAsBytes), servletOut);
+			
+		} else {
 
-	            IOUtils.writeToOutputStream(new ByteArrayInputStream(pictureAsBytes), servletOut);
-	        } catch (CmisObjectNotFoundException exc) {
-
-	        	fallbackToDefaultImage(request);
-	        }
-
+			fallbackToDefaultImage(request);
+		}
 	}
 
 	private void fallbackToDefaultImage(HttpServletRequest request) {
