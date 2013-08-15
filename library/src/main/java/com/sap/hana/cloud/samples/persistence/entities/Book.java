@@ -1,6 +1,7 @@
 package com.sap.hana.cloud.samples.persistence.entities;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 import javax.persistence.Basic;
@@ -41,10 +42,10 @@ public class Book implements Serializable {
     private float bookRating;
 
 	@Basic
-	private int numberOfRatings;
+	private BigDecimal numberOfRatings = BigDecimal.ZERO;
 
 	@Basic
-	private long sumOfRatings;
+	private BigDecimal sumOfRatings = BigDecimal.ZERO;
 
 	@Basic
     private boolean reserved;
@@ -120,19 +121,19 @@ public class Book implements Serializable {
 		this.reservedUntil = reservedUntil;
 	}
 
-	public int getNumberOfRatings() {
+	public BigDecimal getNumberOfRatings() {
 		return numberOfRatings;
 	}
 
-	public void setNumberOfRatings(int numberOfRatings) {
+	public void setNumberOfRatings(BigDecimal numberOfRatings) {
 		this.numberOfRatings = numberOfRatings;
 	}
 
-	public long getSumOfRatings() {
+	public BigDecimal getSumOfRatings() {
 		return sumOfRatings;
 	}
 
-	public void setSumOfRatings(long sumOfRatings) {
+	public void setSumOfRatings(BigDecimal sumOfRatings) {
 		this.sumOfRatings = sumOfRatings;
 	}
 

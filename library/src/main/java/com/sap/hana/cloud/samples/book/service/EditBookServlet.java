@@ -18,7 +18,7 @@ import com.sap.hana.cloud.samples.util.IOUtils;
 /**
  * This class applies changes for a particular book.
  *
- * This servlet can be only called by users with role 'admin'.
+ * This servlet can be called by users with role 'admin'.
  * */
 @WebServlet(name="EditBookServlet",
 urlPatterns={"/restricted/admin/EditBookServlet"})

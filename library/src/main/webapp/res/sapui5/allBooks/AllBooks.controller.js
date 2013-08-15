@@ -207,7 +207,7 @@ sap.ui.controller("sap.library.allBooks.AllBooks", {
 		jQuery.ajax({
 			type: "POST",
 			async : false,
-			url: "restricted/admin/ReturnBookServlet?returningBook&bookName=" + book.bookName + "&authorName=" + book.authorName + "&userId=" + book.reservedByUserId,
+			url: "restricted/everyone/ReturnBookServlet?returningBook&bookName=" + book.bookName + "&authorName=" + book.authorName + "&userId=" + book.reservedByUserId,
 	        contentType : "application/json",
 			success: function (data) {
 				thisController.loadBooks();
@@ -272,19 +272,6 @@ sap.ui.controller("sap.library.allBooks.AllBooks", {
     	sap.ui.commons.MessageBox.alert("Cannot complete the operation, because book is already " + bookState + "." + "\n\n" + "After you close this dialog content will be refreshed.", function(){
     		thisController.loadBooks();
     	}, "Please note");
-    },
-    
-    isUserAdmin : function (arrRoles) {
-    	
-    	var isAdmin = false;
-    	
-    	for (var i=0; i<arrRoles.length; i++) {
-    		if (arrRoles[i] === "admin") {
-    			isAdmin = true;
-    		}
-    	}
-    	
-    	return isAdmin;
     }
 
 });

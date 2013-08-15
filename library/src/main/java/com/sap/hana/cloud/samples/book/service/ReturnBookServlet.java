@@ -17,14 +17,14 @@ import com.sap.hana.cloud.samples.persistence.entities.LibraryUser;
 /**
  * This class marks a book as returned.
  * 
- * When a person returns a book, the administrator should register this event via the 'Return Book' action.
+ * A user can return his/her book.
  * This updates the status of the {@link com.sap.hana.cloud.samples.persistence.entities.Book book}
  * and the {@link com.sap.hana.cloud.samples.persistence.entities.LibraryUser user}.
  * 
- * This servlet can be only called by users with role 'admin'. 
+ * This servlet can be called by users with role 'Everyone'. 
  * */
 @WebServlet(name="ReturnBookServlet",
-urlPatterns={"/restricted/admin/ReturnBookServlet"})
+urlPatterns={"/restricted/everyone/ReturnBookServlet"})
 public class ReturnBookServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1;

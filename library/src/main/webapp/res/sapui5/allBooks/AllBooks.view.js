@@ -21,8 +21,8 @@ sap.ui.jsview("sap.library.allBooks.AllBooks", {
     			thisView.openDialogBook(controller);
     		}
     	});
-    	this.setVisibleIfAdmin(controller, btnAdd);
-
+    	setVisibleIfAdmin(btnAdd);
+    	
     	var lnkTitleTemplate = new sap.ui.commons.Link({
     		 text : "{bookName}",
     		 press : function(event) {
@@ -44,6 +44,57 @@ sap.ui.jsview("sap.library.allBooks.AllBooks", {
 		});
     	this.bindPropertyIfReserved(btnReserveTemplate, "enabled", false, true);
     	btnReserveTemplate.addStyleClass("bigSpaceToRight");
+    	
+    	var btnEditTemplate = new sap.ui.commons.Button({
+    		text : "Edit",
+    		press : function(event) {
+    			var pathToBook = event.getSource().getBindingContext().getPath();
+    			var book = controller.getModel().getProperty(pathToBook);
+    			var strBook = new String(JSON.stringify(book));
+    			var copy = JSON.parse(strBook);
+    			thisView.openDialogBook(controller, copy);
+    		}
+    	});
+    	this.bindPropertyIfReserved(btnEditTemplate, "enabled", false, true);
+    	btnEditTemplate.addStyleClass("smallSpaceToRight");
+    	setVisibleIfAdmin(btnEditTemplate);
+    	
+    	var btnRemoveTemplate = new sap.ui.commons.Button({
+    		text : "Remove",
+    		press : function(event) {
+    			var pathToBook = event.getSource().getBindingContext().getPath();
+    			var book = controller.getModel().getProperty(pathToBook);
+
+                sap.ui.commons.MessageBox.confirm("Do you want to remove book " + book.bookName + "?", function(result) {
+                    if (result === true) {
+                    	controller.removeBook(book);
+                    }
+                }, "Are you sure?");
+    		}
+    	});
+    	this.bindPropertyIfReserved(btnRemoveTemplate, "enabled", false, true);
+    	btnRemoveTemplate.addStyleClass("smallSpaceToRight");
+    	setVisibleIfAdmin(btnRemoveTemplate);
+    	
+    	var btnReturnTemplate = new sap.ui.commons.Button({
+    		text : "Return",
+    		press : function(event) {
+    			
+    			this.setEnabled(false);
+    			var pathToBook = event.getSource().getBindingContext().getPath();
+    			var book = controller.getModel().getProperty(pathToBook);
+
+    			controller.confirmBookReturning(book);
+    		}
+    	});
+    	this.bindPropertyIfReserved(btnReturnTemplate, "enabled", true, false);
+
+    	var actionTemplate = new sap.ui.commons.layout.HorizontalLayout();
+    	actionTemplate.addContent(btnReserveTemplate);
+    	actionTemplate.addContent(btnEditTemplate);
+    	actionTemplate.addContent(btnRemoveTemplate);
+    	actionTemplate.addContent(btnReturnTemplate);
+
 
     	var tblAllBooks = new sap.ui.table.Table({
     		 columns : [
@@ -95,94 +146,22 @@ sap.ui.jsview("sap.library.allBooks.AllBooks", {
 								hAlign : sap.ui.commons.layout.HAlign.Center
 			              },
 			              {
-			            	  width : "13%",
+			            	  width : "35%",
 			            	  label : "Action",
-			                  template : btnReserveTemplate,
+			                  template : actionTemplate,
 			                  hAlign : sap.ui.commons.layout.HAlign.Center
 			              }
     		            ],
     		            selectionMode : sap.ui.table.SelectionMode.None,
     		            visibleRowCount : 10
     	});
-    	tblAllBooks.bindRows("/books");
-
-    	var btnEditTemplate = new sap.ui.commons.Button({
-    		text : "Edit",
-    		press : function(event) {
-    			var pathToBook = event.getSource().getBindingContext().getPath();
-    			var book = controller.getModel().getProperty(pathToBook);
-    			var strBook = new String(JSON.stringify(book));
-    			var copy = JSON.parse(strBook);
-    			thisView.openDialogBook(controller, copy);
-    		}
-    	});
-    	this.bindPropertyIfReserved(btnEditTemplate, "enabled", false, true);
-    	btnEditTemplate.addStyleClass("smallSpaceToRight");
-
-    	var btnRemoveTemplate = new sap.ui.commons.Button({
-    		text : "Remove",
-    		press : function(event) {
-    			var pathToBook = event.getSource().getBindingContext().getPath();
-    			var book = controller.getModel().getProperty(pathToBook);
-
-                sap.ui.commons.MessageBox.confirm("Do you want to remove book " + book.bookName + "?", function(result) {
-                    if (result === true) {
-                    	controller.removeBook(book);
-                    }
-                }, "Are you sure?");
-    		}
-    	});
-    	this.bindPropertyIfReserved(btnRemoveTemplate, "enabled", false, true);
-    	btnRemoveTemplate.addStyleClass("smallSpaceToRight");
-
-    	var btnReturnTemplate = new sap.ui.commons.Button({
-    		text : "Return",
-    		press : function(event) {
-    			
-    			this.setEnabled(false);
-    			var pathToBook = event.getSource().getBindingContext().getPath();
-    			var book = controller.getModel().getProperty(pathToBook);
-
-    			controller.confirmBookReturning(book);
-    		}
-    	});
-    	this.bindPropertyIfReserved(btnReturnTemplate, "enabled", true, false);
-
-    	var actionTemplate = new sap.ui.commons.layout.HorizontalLayout();
-    	actionTemplate.addContent(btnEditTemplate);
-    	actionTemplate.addContent(btnRemoveTemplate);
-    	actionTemplate.addContent(btnReturnTemplate);
-
-    	var clnAdminActions = new sap.ui.table.Column({
-    		width : "22%",
-    		label: "Admin Actions",
-      		template: actionTemplate,
-			hAlign : sap.ui.commons.layout.HAlign.Center
-      	});
-    	this.setVisibleIfAdmin(controller, clnAdminActions);
-    	tblAllBooks.addColumn(clnAdminActions);
+    	tblAllBooks.bindRows("/books", undefined, new sap.ui.model.Sorter("bookName", false));
 
     	matrix.createRow(tblAllBooks);
     	matrix.createRow(btnAdd);
     	matrix.createRow(this.getBookDetailsPanel(controller));
 
     	return matrix;
-    },
-
-    setVisibleIfAdmin : function(controller, element) {
-    	element.bindProperty("visible", "/roles", function(roles){
-
-    		if (!roles) {
-    			return false;
-    		}
-
-    		// IE8  workaround (does not support Array.prototype.indexOf)
-    		if (controller.isUserAdmin(roles)) {
-    			return true;
-    		}
-
-    		return false;
-    	});
     },
 
     bindPropertyAccordingToISBN : function(element, propertyName, valueIfIsbnExists, valueIfIsbnDoesNotExist) {
@@ -234,6 +213,7 @@ sap.ui.jsview("sap.library.allBooks.AllBooks", {
     		change : function(event) {
     			var value = this.getValue();
     			var errorMessage = controller.validateIsbn(value);
+    			changeValueState(this, errorMessage);
     			if (errorMessage) {
     				errorMessage = "ISBN: " + errorMessage;
     			}
@@ -252,6 +232,7 @@ sap.ui.jsview("sap.library.allBooks.AllBooks", {
     		change : function(event) {
     			var value = jQuery.trim(this.getValue());
     			var errorMessage = validateNotEmpty(value);
+    			changeValueState(this, errorMessage);
     			if (errorMessage) {
     				errorMessage = "Title: " + errorMessage;
     			}
@@ -270,6 +251,7 @@ sap.ui.jsview("sap.library.allBooks.AllBooks", {
     		change : function(event) {
     			var value = jQuery.trim(this.getValue());
     			var errorMessage = validateNotEmpty(value);
+    			changeValueState(this, errorMessage);
     			if (errorMessage) {
     				errorMessage = "Author : " + errorMessage;
     			}

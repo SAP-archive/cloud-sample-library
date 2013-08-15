@@ -204,3 +204,45 @@ function formatDate(strValue) {
 	 
 	 return model.getData();
  }
+ 
+ function setVisibleIfAdmin(element) {
+ 	element.bindProperty("visible", "/roles", function(roles){
+
+ 		if (!roles) {
+ 			return false;
+ 		}
+
+ 		// IE8  workaround (does not support Array.prototype.indexOf)
+ 		if (isUserAdmin(roles)) {
+ 			return true;
+ 		}
+
+ 		return false;
+ 	});
+ 	
+ 	return element;
+ }
+ 
+ function isUserAdmin(arrRoles) {
+ 	
+ 	var isAdmin = false;
+ 	
+ 	for (var i=0; i<arrRoles.length; i++) {
+ 		if (arrRoles[i] === "admin") {
+ 			isAdmin = true;
+ 		}
+ 	}
+ 	
+ 	return isAdmin;
+ }
+ 
+ function changeValueState(element, errorMessage) {
+	 
+	 if (errorMessage) {
+		 element.setValueState(sap.ui.core.ValueState.Error);
+	 } else {
+		 element.setValueState(sap.ui.core.ValueState.None);
+	 }
+	 
+ }
+ 

@@ -20,6 +20,14 @@ sap.ui.jsview("sap.library.mainView.Main", {
   		  viewName : "sap.library.myProfile.MyProfile",
   		  type : sap.ui.core.mvc.ViewType.JS
   	  });
+  	  
+  	  var allUsersView = sap.ui.view({
+		  viewName : "sap.library.allUsers.AllUsers",
+		  type : sap.ui.core.mvc.ViewType.JS
+	  });
+  	  
+  	  var itemAllUsers =  new sap.ui.ux3.NavigationItem("WI_allUsers", {key : "wi_allUsers",text:"All Users"});
+  	  setVisibleIfAdmin(itemAllUsers);
 
   	  var shell = new sap.ui.ux3.Shell({
   	        appTitle : "SAP Library Sample",
@@ -34,6 +42,7 @@ sap.ui.jsview("sap.library.mainView.Main", {
   	                       new sap.ui.ux3.NavigationItem("WI_allBooks", {key : "wi_allBooks", text : "Library"}),
   	                       new sap.ui.ux3.NavigationItem("WI_myBooks", {key : "wi_myBooks", text : "My Books"}),
   	                       new sap.ui.ux3.NavigationItem("WI_myProfile", {key : "wi_myProfile",text:"My Profile"}),
+  	                       itemAllUsers
   	                       ],
   	        headerItems : [
   	                      new sap.ui.commons.TextView({
@@ -56,6 +65,10 @@ sap.ui.jsview("sap.library.mainView.Main", {
   	                case "WI_myProfile":
   	                		shell.setContent(profileView);
   	                        break;
+  	                case "WI_allUsers":
+	                		shell.setContent(allUsersView);
+	                		allUsersView.getController().loadUsers();
+	                        break;
   	                default:
   	                        break;
   	                }

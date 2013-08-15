@@ -15,7 +15,7 @@ import com.sap.hana.cloud.samples.adapters.PersistenceAdapter;
 /**
 * This class deletes a book.
 * 
-* This servlet can be only called by users with role 'admin'.
+* This servlet can be called by users with role 'admin'.
 */
 @WebServlet(name="RemoveBookServlet",
 urlPatterns={"/restricted/admin/RemoveBookServlet"})

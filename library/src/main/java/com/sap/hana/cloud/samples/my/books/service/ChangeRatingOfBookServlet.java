@@ -1,6 +1,8 @@
 package com.sap.hana.cloud.samples.my.books.service;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import javax.persistence.EntityManager;
 import javax.servlet.ServletException;
@@ -41,13 +43,13 @@ public class ChangeRatingOfBookServlet extends HttpServlet {
 		LibraryUser userFromDatabase = (LibraryUser) em.createNamedQuery("getUserById").setParameter("userId", currentUserId).getSingleResult();
 		Book currentBook = (Book) em.createNamedQuery("bookByTitleAndAuthor").setParameter("bookName", title).setParameter("authorName", author).getSingleResult();
 
-		int numberOfRatings = currentBook.getNumberOfRatings() + 1;
+		BigDecimal numberOfRatings = currentBook.getNumberOfRatings().add(new BigDecimal(1));
 		currentBook.setNumberOfRatings(numberOfRatings);
 
-		long sumOfRatings = currentBook.getSumOfRatings() + newRating;
+		BigDecimal sumOfRatings = currentBook.getSumOfRatings().add(new BigDecimal(newRating));
 		currentBook.setSumOfRatings(sumOfRatings);
 
-		float calculatedRating = (float) ((double)sumOfRatings/numberOfRatings);
+		float calculatedRating = sumOfRatings.divide(numberOfRatings, 2, RoundingMode.HALF_UP).floatValue();
 		currentBook.setBookRating(calculatedRating);
 
 		BookLending currentLending = (BookLending) em.createNamedQuery("lendingsByUserAndBook").setParameter("user", userFromDatabase).setParameter("lendedBook", currentBook).getSingleResult();

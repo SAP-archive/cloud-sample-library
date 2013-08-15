@@ -67,6 +67,7 @@ sap.ui.jsview("sap.library.myProfile.MyProfile", {
 	   		change : function(event) {
 	   			var value = this.getValue();
 	   			var errorMessage = controller.validateGender(value);
+	   			changeValueState(this, errorMessage);
 	   			controller.getModel().setProperty("/currentUserInfo/genderErrorMessage", errorMessage);
 	   			controller.enableSave();
 	   		}
@@ -87,6 +88,7 @@ sap.ui.jsview("sap.library.myProfile.MyProfile", {
 	   		change : function(event) {
 	   			var value = jQuery.trim(this.getValue());
 	   			var errorMessage = controller.validatePhone(value);
+	   			changeValueState(this, errorMessage);
 	   			controller.getModel().setProperty("/currentUserInfo/phoneErrorMessage", errorMessage);
 	   			controller.enableSave();
 	   		}

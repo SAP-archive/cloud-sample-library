@@ -40,7 +40,7 @@ sap.ui.jsview("sap.library.myBooks.MyBooks", {
              selectionMode : sap.ui.table.SelectionMode.None,
              visibleRowCount : 5
          });
-   	  	myBooksTable.bindRows("/");
+   	  	myBooksTable.bindRows("/", undefined, new sap.ui.model.Sorter("lendedBook/bookName", false));
 
    	  	return myBooksTable;
     }

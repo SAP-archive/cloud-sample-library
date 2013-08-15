@@ -21,7 +21,7 @@ import com.sap.hana.cloud.samples.util.IOUtils;
  * 
  * If such a book already exists, it returns Bad Request (400).
  * 
- * This servlet can be only called by users with role 'admin'. 
+ * This servlet can be called by users with role 'admin'. 
  * */
 @WebServlet(name="SaveBookServlet",
 urlPatterns={"/restricted/admin/SaveBookServlet"})

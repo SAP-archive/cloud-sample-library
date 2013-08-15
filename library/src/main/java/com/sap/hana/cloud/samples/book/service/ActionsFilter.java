@@ -23,7 +23,7 @@ import com.sap.hana.cloud.samples.persistence.entities.Book;
  * on the 'Reserve' button. Since the book has been already reserved, the second user should be notified and data reloading is required.
  * */
 @WebFilter(filterName="ActionsFilter", urlPatterns = {"/restricted/everyone/ReserveBookServlet",
-		"/restricted/admin/EditBookServlet", "/restricted/admin/RemoveBookServlet", "/restricted/admin/ReturnBookServlet"})
+		"/restricted/admin/EditBookServlet", "/restricted/admin/RemoveBookServlet", "/restricted/everyone/ReturnBookServlet"})
 public class ActionsFilter implements Filter {
 
 	@Override
