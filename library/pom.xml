@@ -101,8 +101,14 @@
             <scope>system</scope>
             <systemPath>${env.NW_CLOUD_SDK_PATH}/api/slf4j-api-1.7.2.jar</systemPath>
         </dependency>
-			
-	</dependencies>
+        
+		  <dependency>
+	                <groupId>com.sap.core.persistence.osgi</groupId>
+	                <artifactId>com.sap.core.persistence.osgi.hdb.platform</artifactId>
+	                <version>0.6.11</version>
+	      </dependency>
+	      
+	  </dependencies>
 	
 	<build>
 		<finalName>library</finalName>

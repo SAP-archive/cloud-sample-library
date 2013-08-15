@@ -67,7 +67,16 @@ NOTE: When running locally, you will receive the e-mails on your local file syst
  named Session.template. Remove the .template extension(!) and fill in the data regarding SMTP, username, password, etc. for you e-mail account. You can then import it in the Eclipse IDE.
  7. Assign your user a specific role: Go to the SAP HANA Cloud cockpit. Choose "Authorizations" (located on the left of the screen), select an application from the combo box and the available roles will appear on the right.
  Assign the desired role for the user.
- 8. Only for accounts using HANA DB: you should add extarnal jar {SDK-Location}\repository\plugins\com.sap.core.persistence.osgi.hdb.platform_0.6.8.1.jar to the build path of the project.
+ 8. Only for accounts using HANA DB: you should add extarnal jar {SDK-Location}\repository\plugins\com.sap.core.persistence.osgi.hdb.platform_x.y.z.jar to the build path of the project.
+ 
+ NOTE: you cann add this to your pom.xml:
+ 
+   		  <dependency>
+	                <groupId>com.sap.core.persistence.osgi</groupId>
+	                <artifactId>com.sap.core.persistence.osgi.hdb.platform</artifactId>
+	                <version>0.6.11</version>
+	      </dependency>
+ 
  9. Run the application.
 
 Authors
