@@ -53,7 +53,7 @@ public class MailSenderUtil {
 	
 	private String getTemplate(Mailing mailing) throws IOException {
 		
-		InputStream is;
+		InputStream is = null;
 		String template = null;
 		
 		switch(mailing) {
@@ -66,6 +66,10 @@ public class MailSenderUtil {
 			is = getClass().getResourceAsStream("/return_book_mail_template.txt");
 			template = new String(IOUtils.toByteArray(is), "UTF-8");
 			break;
+		}
+		
+		if(is != null){
+			is.close();
 		}
 		
 		return template;

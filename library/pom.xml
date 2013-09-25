@@ -8,6 +8,14 @@
 	<name>library Maven Webapp</name>
 	<url>http://maven.apache.org</url>
 
+	<repositories>
+		<repository>
+			<id>eclipselink</id>
+			<name>EclipseLink Maven Repository</name>
+			<url>http://download.eclipse.org/rt/eclipselink/maven.repo/</url>
+		</repository>
+	</repositories>
+	
 	<properties>
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -107,7 +115,14 @@
 	                <artifactId>com.sap.core.persistence.osgi.hdb.platform</artifactId>
 	                <version>0.6.11</version>
 	      </dependency>
-	      
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.11</version>
+			<scope>test</scope>
+		</dependency>
+		
 	  </dependencies>
 	
 	<build>

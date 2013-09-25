@@ -82,8 +82,10 @@ public class DocumentAdapter {
      * This method returns null if the document does not exist.
      *
      * @return the document content as a byte array
+     * @throws IOException 
      * */
-    public byte[] getAsByteArray() throws IOException{
+    public byte[] getAsByteArray() throws IOException {
+    	InputStream stream = null;
     	
     	Session session = getCmisSession();
     	if (session == null) {
@@ -96,9 +98,16 @@ public class DocumentAdapter {
     		return null;
     	}
     	
-    	InputStream stream = document.getContentStream().getStream();
+    	try{
+    		stream = document.getContentStream().getStream();
+    		return IOUtils.toByteArray(stream);
+    	}
     	
-    	return IOUtils.toByteArray(stream);
+    	finally{
+    		if(stream != null){
+    			stream.close();
+    		}
+    	}
     } 
     
     private Document getDocument(Session session, String documentName) {

@@ -52,18 +52,25 @@ public class ImageUploadServlet extends HttpServlet {
 	}
 
  	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+ 		InputStream partInputStream = null;
+ 		byte[] imageContent = null;
+ 		
 		Part part = request.getPart("imageUploader");
 		if (part == null) {
 			String error = "Could not retrieve the uploaded content! Part is null.";
 			LOGGER.error(error);
 			throw new RuntimeException(error);
 		}
-
-		InputStream partInputStream = part.getInputStream();
-
-		byte[] imageContent = IOUtils.toByteArray(partInputStream);
-
+		try{
+		 partInputStream = part.getInputStream();
+		 imageContent = IOUtils.toByteArray(partInputStream);
+		}
+		finally{
+			if(partInputStream != null){
+				partInputStream.close();
+			}
+		}
+		
 		String fileName = getFileName(part);
 
 		if (fileName == null) {
