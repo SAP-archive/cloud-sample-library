@@ -69,7 +69,7 @@ NOTE: When running locally, you will receive the e-mails on your local file syst
  Assign the desired role for the user.
  8. Only for accounts using HANA DB: you should add extarnal jar {SDK-Location}\repository\plugins\com.sap.core.persistence.osgi.hdb.platform_x.y.z.jar to the build path of the project.
  
- NOTE: you cann add this to your pom.xml:
+ NOTE: you can add this to your pom.xml:
  
    		  <dependency>
 	                <groupId>com.sap.core.persistence.osgi</groupId>
