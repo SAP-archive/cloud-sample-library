@@ -25,7 +25,6 @@ public class PersistenceAdapter {
 	private static final Logger LOGGER = LoggerFactory.getLogger(PersistenceAdapter.class);
 
 	private static EntityManagerFactory emf;
-	private static EntityManager em;
 
 	/**
 	 * This method returns an {@link javax.persistence.EntityManager EntityManager} instance.
@@ -37,11 +36,7 @@ public class PersistenceAdapter {
 			init();
 		}
 
-		if (em == null) {
-			em = emf.createEntityManager();
-		}
-
-		return em;
+		return emf.createEntityManager();
 	}
 
 
