@@ -58,7 +58,8 @@ NOTE: When running locally, you will receive the e-mails on your local file syst
 * Running on SAP HANA Cloud
  
  1. Go to your computer’s properties > Advanced system settings > Environment Variables, and create a new system variable named "NW\_CLOUD\_SDK\_PATH".
- 2. Enter the path to the directory where you have downloaded and unarchived the SAP HANA Cloud SDK. Check the pom.xml file for the SDK version and versions of other JAR files, if needed.
+ 2. Enter the path to the directory where you have downloaded and unarchived the SAP HANA Cloud JAVA WEB SDK (https://tools.hana.ondemand.com/). 
+ Check the pom.xml file for the SDK version and versions of other JAR files, if needed.
  3. Create a SAP HANA Cloud server.
  4. Double-click on it and choose the "Connectivity" tab.
  5. Create a new destination, named "OpenLibrary" and paste the following URL to the URL field:
