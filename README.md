@@ -1,7 +1,12 @@
-SAP HANA Cloud Samples - Library Application
+Library
 ==========================================
 
-This application makes use of all SAP HANA Cloud services. Every new feature that the Platform will introduce will be incorporated into this application. 
+The Library is a sample Java application that runs on SAP HANA Cloud Platform, Java Web runtime, and uses the following platform services:
+
+* [Persistence Service](https://help.hana.ondemand.com/help/frameset.htm?e7b3c275bb571014a910b3fb4329cf09.html)
+* [Connectivity Service](https://help.hana.ondemand.com/help/frameset.htm?e54cc8fbbb571014beb5caaf6aa31280.html)
+* [Identity Service](https://help.hana.ondemand.com/cloud_identity/frameset.htm)
+* [Document Service](https://help.hana.ondemand.com/help/frameset.htm?e60b7e45bb57101487a881c7c5487778.html)
 
 
 Quick Start
